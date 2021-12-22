@@ -1,11 +1,12 @@
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviourPunCallbacks
-
 {
     public static GameManager instance;
+    public static GameObject localPlayer;
     string gameVersion = "1";
 
     void Awake()
@@ -20,6 +21,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         PhotonNetwork.AutomaticallySyncScene = true;
         DontDestroyOnLoad(gameObject);
+
         instance = this;
     }
 
@@ -27,18 +29,17 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.ConnectUsingSettings();
         PhotonNetwork.GameVersion = gameVersion;
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     public override void OnConnected()
     {
         Debug.Log("PUN Connected");
     }
-
     public override void OnConnectedToMaster()
     {
         Debug.Log("PUN Connected to Master");
     }
-
     public override void OnDisconnected(DisconnectCause cause)
     {
         Debug.LogWarningFormat("PUN Disconnected was called by PUN with reason {0}", cause);
@@ -56,6 +57,30 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        Debug.Log("Joined room!!");
+        if (PhotonNetwork.IsMasterClient)
+        {
+            Debug.Log("Created room!!");
+            PhotonNetwork.LoadLevel("GameScene");
+        }
+        else
+        {
+            Debug.Log("Joined room!!");
+        }
     }
+
+    public override void OnJoinRandomFailed(short returnCode, string message)
+    {
+        Debug.Log("Joined Room Failed!");
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (!PhotonNetwork.InRoom)
+        {
+            return;
+        }
+        localPlayer = PhotonNetwork.Instantiate("TankPlayer", new Vector3(0, 0, 0), Quaternion.identity, 0);
+        Debug.Log("Player Instance ID: " + localPlayer.GetInstanceID());
+    }
+
 }
