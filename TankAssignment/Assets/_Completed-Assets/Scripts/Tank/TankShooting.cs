@@ -91,6 +91,7 @@ namespace Complete
             {
                 // Increment the launch force and update the slider.
                 m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
+
                 m_AimSlider.value = m_CurrentLaunchForce;
             }
 
@@ -141,5 +142,6 @@ namespace Complete
             }
         }
     
+        p
     }
 }
