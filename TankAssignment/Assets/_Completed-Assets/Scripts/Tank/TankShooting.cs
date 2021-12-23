@@ -16,7 +16,12 @@ namespace Complete
         public float m_MinLaunchForce = 15f;        // The force given to the shell if the fire button is not held.
         public float m_MaxLaunchForce = 30f;        // The force given to the shell if the fire button is held for the max charge time.
         public float m_MaxChargeTime = 0.75f;       // How long the shell can charge for before it is fired at max force.
+        public Vector3 rot = new Vector3(0.0f, 1.0f, 0.0f);
 
+        public Transform m_Turret;
+        private string m_LTurnButton;
+        private string m_RTurnButton;
+       
 
         private string m_FireButton;                // The input axis that is used for launching shells.
         private float m_CurrentLaunchForce;         // The force that will be given to the shell when the fire button is released.
@@ -37,6 +42,8 @@ namespace Complete
         {
             // The fire axis is based on the player number.
             m_FireButton = "Fire" + m_PlayerNumber;
+            m_LTurnButton = "Turn Left";
+            m_RTurnButton = "Turn Right";
 
             // The rate that the launch force charges up is the range of possible forces by the max charge time.
             m_ChargeSpeed = (m_MaxLaunchForce - m_MinLaunchForce) / m_MaxChargeTime;
@@ -45,6 +52,17 @@ namespace Complete
 
         private void Update ()
         {
+            //Truning
+            if (Input.GetButton(m_RTurnButton))
+            {
+                Turn("right");
+            }
+
+            if (Input.GetButton(m_LTurnButton))
+            {
+                Turn("left");
+            }
+
             // The slider should have a default value of the minimum launch force.
             m_AimSlider.value = m_MinLaunchForce;
 
@@ -106,6 +124,19 @@ namespace Complete
             Rigidbody shellInstance = Instantiate(m_Shell, pos, m_FireTransform.rotation) as Rigidbody;
             shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
             m_CurrentLaunchForce = m_MinLaunchForce;
+        }
+
+        private void Turn(string dir)
+        {
+            if(dir == "right")
+            {
+                m_Turret.Rotate(rot.x, rot.y, rot.z, Space.Self);
+            }
+
+            if(dir == "left")
+            {
+                m_Turret.Rotate(rot.x, -rot.y, rot.z, Space.Self);
+            }
         }
     
     }

@@ -426,6 +426,8 @@ MonoBehaviour:
   m_MinLaunchForce: 15
   m_MaxLaunchForce: 30
   m_MaxChargeTime: 0.75
+  rot: {x: 0, y: 1, z: 0}
+  m_Turret: {fileID: 4600805148026806965}
 --- !u!114 &1371300009412354376
 MonoBehaviour:
   m_ObjectHideFlags: 0
